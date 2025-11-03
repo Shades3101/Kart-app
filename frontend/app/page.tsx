@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { BookOpen, Camera, CreditCard, Library, Search, ShoppingBag, Store, Tag, Truck, Wallet } from "lucide-react";
+import { ArrowRight, BookOpen, Camera, CreditCard, Library, Search, ShoppingBag, Store, Tag, Truck, Wallet } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -63,28 +63,6 @@ export default function Home() {
       description:
         "You will get money into your account once you receive an order for your book.",
       icon: <Wallet className="h-8 w-8 text-primary" />,
-    },
-  ];
-
-  const buySteps = [
-    {
-      step: "Step 1",
-      title: "Select the used books you want",
-      description: "Search from over thousands of used books listed on BookKart.",
-      icon: <Search className="h-8 w-8 text-primary" />,
-    },
-    {
-      step: "Step 2",
-      title: "Place the order by making payment",
-      description:
-        "Then simply place the order by clicking on the 'Buy Now' button.",
-      icon: <CreditCard className="h-8 w-8 text-primary" />,
-    },
-    {
-      step: "Step 3",
-      title: "Get the books delivered at your doorstep",
-      description: "The books will be delivered to you at your doorstep!",
-      icon: <Truck className="h-8 w-8 text-primary" />,
     },
   ];
 
@@ -210,12 +188,21 @@ export default function Home() {
                 <div className="relative h-48 overflow-hidden -my-6">
                   <Image src={post.imageSrc} alt={post.title} layout="fill" objectFit="cover" className="transition-transform duration-300 hover:scale-105" />
                 </div>
-                <div className="p-6 flex-col grow ">
+                <div className="p-6 flex flex-col grow ">
                   <h3 className="text-xl font-semibold mb-2 mt-6 flex items-center gap-2">
                     <div className="bg-primary/10 p-2 rounded-full ">
                       {post.icon}
                     </div>
+                    <span className="grow">
+                      {post.title}
+                    </span>
                   </h3>
+                  <p className="text-gray-600 text-sm grow">
+                    {post.description}
+                  </p>
+                  <Button variant="link" className="pt-8 flex items-center text-primary">
+                    Read more <ArrowRight />
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -226,4 +213,4 @@ export default function Home() {
   </div>
 }
 
-//2
+//2:52:15

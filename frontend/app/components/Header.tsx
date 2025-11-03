@@ -30,8 +30,8 @@ export default function Header() {
 
     const user = {
         profilePicture: "",
-        name: "",
-        email: ""
+        name: "Aashirwad",
+        email: "Scilegrey@gmail.com"
 
     }
     const userPlaceholder = "";

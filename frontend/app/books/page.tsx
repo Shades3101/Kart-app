@@ -242,7 +242,6 @@ export default function Books() {
                             onClick={() => router.push("/book-sell")}
                             buttonText="Sell Your First Book"
                             />
-
                     )}
                 </div>
             </div>

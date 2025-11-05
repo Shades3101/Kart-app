@@ -13,9 +13,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import AuthPage from "./AuthPage";
 
-
-//2:06:10
 
 function handleLogout() {
 
@@ -30,8 +29,8 @@ export default function Header() {
 
     const user = {
         profilePicture: "",
-        name: "Aashirwad",
-        email: "Scilegrey@gmail.com"
+        name: "",
+        email: ""
 
     }
     const userPlaceholder = "";
@@ -85,6 +84,12 @@ export default function Header() {
                 onclick: handleLoginClick
             },
         ]),
+             {
+                icon: <Lock className="h-5 w-5" />,
+                label: "Sign in/ Sign up",
+                onclick: handleLoginClick
+            },
+        
         {
             icon: <User className="h-5 w-5" />,
             label: "My Profile",
@@ -259,6 +264,7 @@ export default function Header() {
                 </Link>
             </div>
         </div>
+        <AuthPage isLoginOpen = {isLoginOpen} setIsLoginOpen={handleLoginClick} />
     </div>
 }
 

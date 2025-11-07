@@ -1,0 +1,26 @@
+import mongoose, { Schema } from "mongoose";
+
+
+export interface address {
+    user: mongoose.Types.ObjectId,
+    addressLine1: string,
+    addressLine2?: string,
+    phone: string,
+    city: string,
+    state: string,
+    pincode: string,
+
+}
+
+const addressSchema = new Schema<address> ({
+    user: {type: Schema.Types.ObjectId, ref: 'User', required:true},
+    addressLine1: {type: String, required: true},
+    addressLine2 : {type: String, required: true},
+    phone: {type: String, required: true},
+    city: {type: String, required: true},
+    state: {type: String, required: true},
+    pincode: {type: String, required: true}
+
+}, {timestamps: true})
+
+export const AddressModel = mongoose.model<address>("Address", addressSchema)

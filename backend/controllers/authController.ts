@@ -3,6 +3,7 @@ import { UserModel } from "../models/User";
 import crypto  from "crypto";
 import { sendResetEmail, sendVerifyEmail } from "../config/emailConfig";
 import generateToken from "../utils/GenerateToken";
+import { response } from "../utils/responseHandler";
 
 export  default async function register ( req: Request, res: Response) {
 
@@ -14,9 +15,7 @@ export  default async function register ( req: Request, res: Response) {
 
         if(existingUser) {
 
-            return res.status(400).json({
-                msg: "User Already exists"
-            })
+            return response(res, 400, "User Already Exists")
         }
 
         const randomCrypto = crypto.randomBytes(20).toString('hex');
@@ -30,30 +29,24 @@ export  default async function register ( req: Request, res: Response) {
 
         const result = await sendVerifyEmail(user.email, randomCrypto)
         console.log(result)
-        return res.json({
-            msg: "Signup Success"
-        })
+        return response(res, 200, "Signup Success")
 
     } catch (error) {
         console.log(error);
-
-        return res.status(500).json({
-            msg: "Internal Server Error"
-        })
+        
+        return response(res, 500, "Internal Server Error")
     }
 }
 
 export const verifyEmail = async (req : Request, res: Response) => {
     try {
-        const token = req.params;
+        const { token } = req.params;
         const user = await UserModel.findOne({
             token
         })
 
         if(!user) {
-            return res.status(400).json({
-                msg: "Invalid or Expired Token"
-            })
+            return response(res, 400, "Invalid or Expired Token")
         }
 
         user.isVerified = true;
@@ -66,15 +59,12 @@ export const verifyEmail = async (req : Request, res: Response) => {
         })
 
         await user.save();
-        return res.json({
-            msg: "Email Verification Successful"
-        })
+        return response(res, 200, "Email Verification Successful")
+        
         
     } catch (error) {
         console.log(error);
-        return res.status(500).json({
-            msg: "Internal Server Error, Please Try Again"
-        })
+       return response(res, 500, "Internal Server Error")
     }
 }
 
@@ -86,15 +76,12 @@ export const login = async (req : Request, res: Response) => {
         })
 
         if(!user || !(await user.comparePass(password))) {
-            return res.status(400).json({
-                msg: "Invalid Email or Password "
-            })
+            return response(res, 400,"Invalid Email or Password")
+           
         }
 
         if(!user.isVerified) {
-            return res.status(400).json({
-                msg: "Verify Your Email Before Loggin In"
-            })
+            return response(res, 400,"Verify Your Email Before Loggin In")
         }
 
         const accessToken = generateToken(user);
@@ -103,29 +90,24 @@ export const login = async (req : Request, res: Response) => {
             maxAge: 24 * 60 * 60 * 1000
         })
 
-        return res.json({
-            msg: "Login successfull"
-        })
+        return response(res, 200,"Login Successfull", {user: {name: user.name, email: user.email}}) 
         
     } catch (error) {
         console.log(error);
-        return res.status(500).json({
-            msg: "Internal Server Error, Please Try Again"
-        })
+        return response(res, 500, "Internal Server Error")
     }
 }
 
 export const forgotPass = async (req: Request, res: Response) =>{
     try {
         const { email } = req.body;
+        console.log(email)
         const user = await UserModel.findOne({
             email
         })
 
         if(!user) {
-            return res.status(400).json({
-                msg: `No user exists with this ${email}id`
-            })
+            return response(res, 400,`No user exists with this ${email}id`)
         }
 
         const resetToken = crypto.randomBytes(20).toString('hex');
@@ -134,22 +116,19 @@ export const forgotPass = async (req: Request, res: Response) =>{
         await user.save();
 
         await sendResetEmail(user.email, resetToken);
+
+        return response(res, 200, "Reset link Sent to the mail")
         
-        return res.json({
-            msg: "Reset link Sent to the mail"
-        })
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({
-            msg: "Internal Server Error, Please Try Again"
-        })
+        return response(res, 500, "Internal Server Error")
     }
 }
 
 export const resetPass = async (req : Request, res: Response) => {
     try {
-        const token = req.params;
+        const {token} = req.params;
         const {newPassword}  = req.body;
 
         const user = await UserModel.findOne({
@@ -158,9 +137,7 @@ export const resetPass = async (req : Request, res: Response) => {
         })
 
         if(!user) {
-            return res.status(400).json({
-                msg: "Invalid or Expired Token"
-            })
+            return response(res, 400, "Invalid or Expired Token")
         }
 
         user.password = newPassword;
@@ -175,15 +152,11 @@ export const resetPass = async (req : Request, res: Response) => {
 
         await user.save();
 
-        return res.json({
-            msg: "Password Reset Successfully"
-        })
+        return response(res, 200, "Password Reset SuccessFully")
         
     } catch (error) {
         console.log(error);
-        return res.status(500).json({
-            msg: "Internal Server Error, Please Try Again"
-        })
+        return response(res, 500, "Internal Server Error")
     }
 }
 
@@ -193,14 +166,11 @@ export const logout = async( req: Request, res: Response) => {
             httpOnly: true,
         })
 
-        return res.json({
-            msg: "Successfully Logged Out"
-        })
+        return response(res, 200, "Successfully Logged Out")
+        
     } catch (error) {
         console.log(error)
-        return res.status(500).json({
-            msg: "Internal Server Error"
-        })
+        return response(res, 500, "Internal Server Error")
     }
 }
 
@@ -208,26 +178,18 @@ export const checkUserAuth = async (req: Request, res: Response) => {
     try {
         const userId = req.id;
         if(!userId) {
-            
-            return res.status(400).json({
-                msg: "unauthenticated"
-            })
+            return response(res, 400, "unauthenticated")
+
         }
 
-        const user = await UserModel.findById(userId).select("name, email")
+        const user = await UserModel.findById(userId).select("name email profilePicture isVerified")
         if(!user) {
-            return res.status(403).json({
-                msg: "user not found"
-            })
+             return response(res, 400, "user not found")
         }
-
-        return res.json({
-            msg: "user retrieved SuccessFully"
-        })
+        return response(res, 200, "Authenticated", user)
+       
     } catch (e) {
         console.log(e);
-        return res.status(500).json({
-            msg: "Internal Server Error, Please Try Again"
-        })
+        return response(res, 500, "Internal Server Error")
     }
 }

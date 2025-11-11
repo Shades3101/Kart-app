@@ -10,6 +10,8 @@ import { wishListRouter } from "./routes/wishListRouter";
 import { addressRouter } from "./routes/addressRoute";
 import { userRouter } from "./routes/userRouter";
 import { orderRouter } from "./routes/orderRouter";
+import passport from "./controllers/strategy/googleStrategy";
+
 
 dotenv.config();
 
@@ -20,6 +22,7 @@ app.use(cors({
 }))
 app.use(express.json());
 app.use(cookieParser());
+app.use(passport.initialize())
 dbConnect();
 
 

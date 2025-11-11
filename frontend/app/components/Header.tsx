@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { toggleLoginDialog } from "@/store/slice/userSlice";
+import { logout, toggleLoginDialog } from "@/store/slice/userSlice";
 import { RootState } from "@/store/store";
 import { ChevronRight, Heart, HelpCircle, Lock, LogOut, Menu, Package, Search, ShoppingCart, User } from "lucide-react";
 import Image from "next/image";
@@ -14,11 +14,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AuthPage from "./AuthPage";
+import { useLogoutMutation } from "@/store/api";
+import toast from "react-hot-toast";
 
-
-function handleLogout() {
-
-}
 
 export default function Header() {
 
@@ -26,14 +24,11 @@ export default function Header() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dispatch = useDispatch();
     const isLoginOpen = useSelector((state: RootState) => state.user.isLoginDialogOpen);
+    const [logoutMutation] = useLogoutMutation();
 
-    const user = {
-        profilePicture: "",
-        name: "",
-        email: ""
-
-    }
-    const userPlaceholder = "";
+    const user = useSelector((state: RootState) => state.user.user);
+    console.log(user)
+    const userPlaceholder = user?.name.split(" ").map((name: string) => name[0]).join("");
 
     function handleProtectionNavigation(href: string) {
 
@@ -52,6 +47,18 @@ export default function Header() {
         setIsDropdownOpen(false);
     }
 
+    async function handleLogout() {
+        try {
+            await logoutMutation({}).unwrap()
+            dispatch(logout());
+            toast.success("user logged out Successfully");
+            setIsDropdownOpen(false);
+
+        } catch (error) {
+            toast.error("failed to logout")
+        }
+    }
+
     // dropdown menu items
     const menuItems = [
         ...(user && user ? [
@@ -61,7 +68,7 @@ export default function Header() {
                     <div className="flex space-x-4 itmes-center p-2 border-b">
                         <Avatar className="w-12 h-12 -ml-2 rounded-full">
                             {user?.profilePicture ? (
-                                <AvatarImage alt="user image"></AvatarImage>
+                                <AvatarImage src={user.profilePicture} alt="user_image"></AvatarImage>
                             ) : (
                                 <AvatarFallback> {userPlaceholder} </AvatarFallback>
                             )}
@@ -84,12 +91,7 @@ export default function Header() {
                 onclick: handleLoginClick
             },
         ]),
-             {
-                icon: <Lock className="h-5 w-5" />,
-                label: "Sign in/ Sign up",
-                onclick: handleLoginClick
-            },
-        
+
         {
             icon: <User className="h-5 w-5" />,
             label: "My Profile",
@@ -110,13 +112,13 @@ export default function Header() {
             label: "Help",
             href: "/how-it-works"
         },
-        ...(user && [
+        ...(user && user ? [
             {
                 icon: <LogOut className="h-5 w-5" />,
                 label: "Logout",
                 onclick: handleLogout
             },
-        ])
+        ] : [])
     ]
 
     const MenuItems = ({ className = "" }) => {
@@ -168,7 +170,7 @@ export default function Header() {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <Link href='/item-sell'>
+                    <Link href='/book-sell'>
                         <Button variant='secondary' className="bg-yellow-400 text-gray-900 hover:bg-yellow-500">
                             Sell Used Items
                         </Button>
@@ -177,9 +179,9 @@ export default function Header() {
                     <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen} >
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size='default' className="flex items-center justify-center gap-2 p-3">
-                                <Avatar className="w-5 h-5 rounded-full flex items-center justify-center">
+                                <Avatar className="w-7 h-7 rounded-full flex items-center justify-center">
                                     {user?.profilePicture ? (
-                                        <AvatarImage alt="user image"></AvatarImage>
+                                        <AvatarImage src={user?.profilePicture} alt="user_image"></AvatarImage>
                                     ) : userPlaceholder ? (
                                         <AvatarFallback> {userPlaceholder} </AvatarFallback>
                                     ) : (
@@ -264,7 +266,7 @@ export default function Header() {
                 </Link>
             </div>
         </div>
-        <AuthPage isLoginOpen = {isLoginOpen} setIsLoginOpen={handleLoginClick} />
+        <AuthPage isLoginOpen={isLoginOpen} setIsLoginOpen={handleLoginClick} />
     </div>
 }
 

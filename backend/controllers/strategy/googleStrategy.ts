@@ -31,7 +31,7 @@ async (req: Request, accessToken: string, refreshToken : string, profile : Profi
             name : displayName, 
             email: emails?.[0].value,
             profilePicture: photos?.[0].value,
-            isVerified : true,
+            isVerified : emails?.[0]?.verified,
             agreeTerms: true,
 
         })
@@ -43,3 +43,5 @@ async (req: Request, accessToken: string, refreshToken : string, profile : Profi
 }
 
 ))
+
+export default passport;

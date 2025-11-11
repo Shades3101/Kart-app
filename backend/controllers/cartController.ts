@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ProductModel } from "../models/Products";
 import { cartModel } from "../models/CartItems";
+import { response } from "../utils/responseHandler";
 
 export const addToCart = async (req: Request, res: Response) => {
     try {
@@ -8,19 +9,19 @@ export const addToCart = async (req: Request, res: Response) => {
         const { productId, quantity } = req.body;
 
         if (!productId || !quantity || quantity <= 0) {
-            return res.status(400).json({ msg: "Invalid product or quantity" });
+
+            return response(res, 400, "Invalid product or quantity");
         }
 
         const product = await ProductModel.findById(productId);
 
         if (!product) {
-            return res.status(404).json({ msg: "Product not found" });
+            return response(res, 404, "Product not found")
         }
 
         if (product.seller.toString() === userId) {
-            return res.status(400).json({
-                msg: "You cannot add your own product to the cart"
-            });
+
+            return response(res, 400, "You cannot add your own product to the cart")
         }
 
         let cart = await cartModel.findOne({ user: userId });
@@ -45,15 +46,12 @@ export const addToCart = async (req: Request, res: Response) => {
 
         await cart.save();
 
-        return res.status(200).json({
-            msg: "Item added to cart successfully"
-        });
+        return response(res, 200, "Item added to cart successfully")
 
     } catch (error) {
+
         console.error( error);
-        return res.status(500).json({
-            msg: "Internal Server Error"
-        });
+        return response(res, 500, "Internal Server Error")
     }
 }
 
@@ -66,24 +64,18 @@ export const removeFromCart = async (req: Request, res: Response) => {
 
         if (!cart) {
 
-            return res.status(400).json({
-                msg: "Cart Not Found"
-            })
+            return response(res, 400,"Cart Not Found");
         }
 
         cart.items.pull({ product: productId });
 
         await cart.save();
 
-        return res.status(200).json({
-            msg: "Item removed from cart successfully"
-        });
+        return response(res, 200, "Item removed from cart successfully")
 
     } catch (error) {
         console.error( error);
-        return res.status(500).json({
-            msg: "Internal Server Error"
-        });
+        return response(res, 500, "Internal Server Error")
     }
 }
 
@@ -95,22 +87,15 @@ export const getCart = async (req: Request, res: Response) => {
         let cart = await cartModel.findOne({ user: userId });
 
         if (!cart) {
-
-            return res.status(404).json({
-                msg: "Cart is Empty"
-            })
+            return response(res, 404, "Cart is Empty")
         }
 
         await cart.save();
 
-        return res.status(200).json({
-            msg: "Here is your Cart", cart
-        });
+        return response(res, 200, "Here is your Cart", cart)
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({
-            msg: "Internal Server Error"
-        });
+        return response(res, 500, "Internal Server Error")
     }
 }

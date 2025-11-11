@@ -41,7 +41,7 @@ export const sendVerifyEmail = async (to: string, token: string) => {
 }
 
 export const sendResetEmail = async (to: string, token: string) => {
-    const ResetUrl = `${process.env.FE_URL}/reset/${token}`
+    const ResetUrl = `${process.env.FE_URL}/reset-password/${token}`
     const html = `
     <h1> Reset Your kart Password </h1>
     <p> You have requested to reset your password. Click On the link Below </p>

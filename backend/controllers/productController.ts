@@ -1,34 +1,30 @@
 import { Request, Response } from "express";
 import { uploadToCloud } from "../config/cloudinaryConfig";
 import { ProductModel } from "../models/Products";
+import { response } from "../utils/responseHandler";
 
-export const createProduct  = async (req: Request, res: Response) => {
+export const createProduct = async (req: Request, res: Response) => {
     try {
-        const { title, subject, category, condition, classType, price, author, edition, description ,finalPrice, shippingCharge, paymentMode, paymentDetails} = req.body;
+        const { title, subject, category, condition, classType, price, author, edition, description, finalPrice, shippingCharge, paymentMode, paymentDetails } = req.body;
 
         const sellerId = req.id;
         const images = req.files as Express.Multer.File[]
-        
-        if(!images || images.length === 0) {
-            
-            return res.status(400).json({
-                msg: "Image is required"
-            })
+
+        if (!images || images.length === 0) {
+
+            return response(res, 400, "Image is required")
+
         }
 
         let parsedPaymentDetails = JSON.parse(paymentDetails);
-        if(paymentMode === "UPI" && (!parsedPaymentDetails) || !parsedPaymentDetails.upiId) {
+        if (paymentMode === "UPI" && (!parsedPaymentDetails) || !parsedPaymentDetails.upiId) {
 
-            return res.status(400).json({
-                msg: "UPI Id is Required for Payment"
-            })
+            return response(res, 400, "UPI Id is Required for Payment")
         }
 
-        if(paymentMode === "Bank Account" && (!parsedPaymentDetails || !parsedPaymentDetails.bankDetails || !parsedPaymentDetails.bankDetails.accountNumber || !parsedPaymentDetails.bankDetails.ifscCode || !parsedPaymentDetails.bankDetails.bankName)) {
+        if (paymentMode === "Bank Account" && (!parsedPaymentDetails || !parsedPaymentDetails.bankDetails || !parsedPaymentDetails.bankDetails.accountNumber || !parsedPaymentDetails.bankDetails.ifscCode || !parsedPaymentDetails.bankDetails.bankName)) {
 
-            return res.status(400).json({
-                msg: "Bank Account details required for payment"
-            })
+            return response(res, 400, "Bank Account details required for payment")
         }
 
         const uploadPromise = images.map(file => uploadToCloud(file));
@@ -53,35 +49,29 @@ export const createProduct  = async (req: Request, res: Response) => {
             images: imageUrl
         })
 
-        return res.json(
-            {msg: "Product Create", Product}
-        )
+        return response(res, 200, "Product Created", Product)
+        
     } catch (error) {
         console.log(error);
-        return res.status(500).json({
-            msg: "Internal Server Error"
-        })
+        return response(res, 500, "Internal Server Error")
     }
 }
 
-export const getAllProducts = async  (req: Request, res: Response) => {
+export const getAllProducts = async (req: Request, res: Response) => {
     try {
         const products = await ProductModel.find().sort({ createdAt: -1 }).populate('seller', 'name email')
 
-        return res.json({
-            msg: "Product Fetched SuccessFully", products
-        })
+        return response(res, 200, "Product Fetched SuccessFully", products)
 
     } catch (error) {
-         console.log(error);
-        return res.status(500).json({
-            msg: "Internal Server Error"
-        })
+        console.log(error);
+
+        return response(res, 500, "Internal Server Error")
     }
 }
 
 export const getProductById = async (req: Request, res: Response) => {
-     try {
+    try {
         const product = await ProductModel.findById(req.params.id).populate({
             path: "seller",
             select: "name email profilePicture phone addresses",
@@ -91,43 +81,35 @@ export const getProductById = async (req: Request, res: Response) => {
             }
         })
 
-        if(!product) {
-            return res.status(404).json({
-                msg: "Product not found"
-            })
+        if (!product) {
+            return response(res, 404, "Product not found")
         }
-
-        return res.json({
-            msg: "Product Fetched SuccessFully", product
-        })
+        
+        return response(res, 200, "Product Fetched SuccessFully", product)
 
     } catch (error) {
-         console.log(error);
-        return res.status(500).json({
-            msg: "Internal Server Error"
-        })
+        console.log(error);
+
+        return response(res, 500, "Internal Server Error")
+        
     }
 }
 
-export const deleteProduct  = async (req: Request, res: Response) => {
-     try {
+export const deleteProduct = async (req: Request, res: Response) => {
+    try {
         const product = await ProductModel.findByIdAndDelete(req.params.productId);
 
-         if(!product) {
-            return res.status(404).json({
-                msg: "Product not found"
-            })
+        if (!product) {
+
+            return response(res, 404, "Product not found")
         }
 
-        return res.json({
-            msg: "Product Deleted SuccessFully", 
-        })
+        return response(res, 200, "Product Deleted SuccessFully")
 
     } catch (error) {
-         console.log(error);
-        return res.status(500).json({
-            msg: "Internal Server Error"
-        })
+        console.log(error);
+
+        return response(res, 500, "Internal Server Error")
     }
 }
 
@@ -135,28 +117,22 @@ export const getProductBySeller = async (req: Request, res: Response) => {
     try {
         const sellerId = req.params.sellerId;
 
-        if(!sellerId) {
-            return res.status(400).json({
-               msg: "no seller for this id"
-            })
+        if (!sellerId) {
+            return response(res, 400, "no seller for this id")
         }
 
         const product = await ProductModel.find({ seller: sellerId }).sort({ createdAt: -1 }).populate("seller", "name email profilePicture phone addresses")
 
-        if(!product) {
-            return res.status(404).json({
-                msg: "Product not found for this seller"
-            })
+        if (!product) {
+
+            return response(res, 404, "Product not found for this seller")
         }
 
-        return res.json({
-            msg: "Product Fetched SuccessFully", product
-        })
+        return response(res, 200, "Product Fetched SuccessFully", product)
 
     } catch (error) {
-         console.log(error);
-        return res.status(500).json({
-            msg: "Internal Server Error"
-        })
+        console.log(error);
+
+        return response(res, 500, "Internal Server Error")
     }
 }

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { uploadToCloud } from "../config/cloudinaryConfig";
 import { ProductModel } from "../models/Products";
+import { AddressModel } from "../models/Address";
 import { response } from "../utils/responseHandler";
 
 export const createProduct = async (req: Request, res: Response) => {
@@ -74,15 +75,22 @@ export const getProductById = async (req: Request, res: Response) => {
     try {
         const product = await ProductModel.findById(req.params.id).populate({
             path: "seller",
-            select: "name email profilePicture phone addresses",
-            populate: {
-                path: "addresses",
-                model: "Address"
-            }
+            select: "name email profilePicture phone addresses"
         })
 
         if (!product) {
             return response(res, 404, "Product not found")
+        }
+
+            //fail safe 
+        if (product.seller && product.seller._id) {
+            const addresses = await AddressModel.find({ user: product.seller._id });
+            
+            if (addresses.length > 0) {
+                (product.seller as any).addresses = addresses;
+            } else {
+                (product.seller as any).addresses = [];
+            }
         }
         
         return response(res, 200, "Product Fetched SuccessFully", product)

@@ -11,11 +11,12 @@ import { ChevronRight, Heart, HelpCircle, Lock, LogOut, Menu, Package, Search, S
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AuthPage from "./AuthPage";
-import { useLogoutMutation } from "@/store/api";
+import { useGetCartQuery, useLogoutMutation } from "@/store/api";
 import toast from "react-hot-toast";
+import { setCart } from "@/store/slice/cartSlice";
 
 
 export default function Header() {
@@ -29,6 +30,13 @@ export default function Header() {
     const user = useSelector((state: RootState) => state.user.user);
     console.log(user)
     const userPlaceholder = user?.name.split(" ").map((name: string) => name[0]).join("");
+    const cartItemCount = useSelector((state: RootState) => state.cart.items.length)
+    const {data: cartData} = useGetCartQuery(user?._id,  {skip: !user})
+    const [searchTerms, setSearchTerms] = useState("");
+
+    const handleSearch = () => {
+        router.push(`/books?search=${encodeURIComponent(searchTerms)}`)
+    }
 
     function handleProtectionNavigation(href: string) {
 
@@ -46,6 +54,12 @@ export default function Header() {
         dispatch(toggleLoginDialog());
         setIsDropdownOpen(false);
     }
+
+    useEffect(() => {
+        if(cartData?.success && cartData?.data){
+            dispatch(setCart(cartData.data))
+        }
+    }, [cartData, dispatch])
 
     async function handleLogout() {
         try {
@@ -159,10 +173,10 @@ export default function Header() {
                         <Input
                             type="text"
                             placeholder="Search"
-                            className="w-full pr-10"
+                            className="w-full pr-10" value={searchTerms} onChange={(e) => setSearchTerms(e.target.value)}
                         />
 
-                        <Button size='icon' variant='ghost' className="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer">
+                        <Button size='icon' variant='ghost' className="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer" onClick={handleSearch}>
                             <Search />
 
                         </Button>
@@ -202,8 +216,10 @@ export default function Header() {
                                 <ShoppingCart className=" mr-1" />
                                 Cart
                             </Button>
-                            {user && (
-                                <span className="absolute top-1 left-4 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white  rounded-full px-1 text-xs">3</span>
+                            {user && cartItemCount > 0 && (
+                                <span className="absolute top-1 left-4 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white  rounded-full px-1 text-xs">
+                                    {cartItemCount}
+                                </span>
                             )}
 
                         </Link>

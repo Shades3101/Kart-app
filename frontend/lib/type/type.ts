@@ -10,7 +10,7 @@ export interface BookDetails {
     author: string,
     edition?: string,
     description: string,
-    finalPrice: string,
+    finalPrice: number,
     shippingCharge: string,
     seller: userData,
     paymentMode: "UPI" | "Bank Account",

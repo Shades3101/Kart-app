@@ -1,14 +1,24 @@
 "use client"
 
+import NoData from "@/app/components/NoData";
+import { ShareButton } from "@/app/components/Share";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import ItemLoader from "@/lib/ItemLoader";
+import { BookDetails } from "@/lib/type/type";
+import { useAddToCartMutation, useAddToWishlistMutation, useGetProductsByIdQuery, useRemoveFromWishlistMutation } from "@/store/api";
+import { addToCart } from "@/store/slice/cartSlice";
+import { addToWishListAction, removeFromWishlistAction } from "@/store/slice/wishlistSlice";
+import { RootState } from "@/store/store";
 import { formatDistanceToNow } from "date-fns";
 import { CheckCircle2, Heart, Loader2, MapPin, MessageCircle, Share, ShoppingCart, Truck, User2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation"
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function ProductPage() {
 
@@ -17,38 +27,94 @@ export default function ProductPage() {
     const [selectedImage, setSelectedImage] = useState(0);
     const router = useRouter();
     const [isAddToCart, setIsAddToCart] = useState(false);
+    const { data: apiResponse = {}, isLoading, isError } = useGetProductsByIdQuery(id);
+    const [book, setBook] = useState<BookDetails | null>(null);
+    const [addToCartMutation] = useAddToCartMutation();
+    const [addToWishlistMutation] = useAddToWishlistMutation();
+    const [removeWishlistMutation] = useRemoveFromWishlistMutation();
+    const wishlist = useSelector((state: RootState) => state.wishlist.items)
+    const dispatch = useDispatch();
+    useEffect(() => {
+        if (apiResponse.success) {
+            setBook(apiResponse.data)
 
-    const book = {
-        _id: "1",
-        images: [],
-        title: "The Alchemist",
-        category: "Reading Books (Novels)",
-        condition: "Excellent",
-        classType: "B.Com",
-        subject: "Fiction",
-        price: 300,
-        author: "Paulo Coelho",
-        edition: "25th Anniversary Edition",
-        description: "A philosophical book about a shepherd's journey to realize his dreams.",
-        finalPrice: 250,
-        shippingCharge: 50,
-        paymentMode: "UPI",
-        paymentDetails: {
-            upiId: "example@upi"
-        },
-        createdAt: new Date("2024-01-01"),
-        seller: { name: "John Doe", contact: "1234567890" }
+        }
+    }, [apiResponse])
+
+
+    const handleAddToCart = async () => {
+        if (book) {
+            setIsAddToCart(true)
+
+            try {
+                const result = await addToCartMutation({
+                    productId: book._id,
+                    quantity: 1,
+                }).unwrap();
+
+                console.log(result)
+                if (result.success && result.data) {
+                    dispatch(addToCart(result.data))
+                    toast.success(result.data.message || 'Added to Cart Successfully')
+                } else {
+                    throw new Error(result.message || "Failed To Add To Cart")
+                }
+            } catch (error: any) {
+                const errormessage = error?.data?.message;
+                toast.error(errormessage)
+            } finally {
+                setIsAddToCart(false)
+            }
+        }
     }
 
-    const handleAddToCart = (productId: string) => {
+    const handleAddToWishlist = async (productId: string) => {
+        const isWishlist = wishlist.some((item) => item.products.includes(productId))
 
+        try {
+
+            if (isWishlist) {
+                const result = await removeWishlistMutation(productId).unwrap();
+                if (result.success) {
+                    dispatch(removeFromWishlistAction(productId))
+                    toast.success(result.message || "Remove From Wishlist")
+                } else {
+                    throw new Error(result.message || "Failed To Remove from Wishlist")
+                }
+
+            } else {
+                const result = await addToWishlistMutation(productId).unwrap();
+                if (result.success) {
+                    dispatch(addToWishListAction(result.data))
+                    toast.success(result.message || "Added To Wishlist")
+                } else {
+                    throw new Error(result.message || "Failed To Add To Wishlist")
+                }
+            }
+        } catch (error: any) {
+            const errormessage = error?.data?.message;
+            toast.error(errormessage)
+        }
     }
 
-    const handleAddToWishlist = (productId: string) => {
-
+    const bookImage = book?.images || [];
+    if (isLoading) {
+        return <ItemLoader />
     }
 
-    const bookImage = book.images || [];
+    if (!book || isError) {
+        return (
+            <div className="my-10 max-w-3xl justify-center mx-auto">
+                <NoData
+                    imageUrl="/images/no-book.jpg"
+                    message="Loading...."
+                    description="Wait, we are fetching book details"
+                    onClick={() => router.push("/book-sell")}
+                    buttonText="Sell Your First Book"
+                />
+            </div>
+        );
+    }
 
     const calculateDiscount = (price: number, finalPrice: number): number => {
         if (price > finalPrice && price > 0) {
@@ -90,7 +156,7 @@ export default function ProductPage() {
                         )}
                         <div className="absolute top-3 right-3">
                             <Button variant="outline" size="icon" onClick={() => handleAddToWishlist(book._id)} className="rounded-full w-10 h-10 flex items-center justify-center hover:scale-110">
-                                <Heart className="fill-red-500" />
+                                <Heart className= {` ${wishlist.some((w) => w.products.includes(book._id)) ? "fill-red-500" : "" }`} />
                             </Button>
                         </div>
                     </div>
@@ -118,9 +184,9 @@ export default function ProductPage() {
                             </p>
                         </div>
                         <div className="flex gap-2">
-                            <Button variant="outline">
-                                <Share />
-                            </Button>
+                            <ShareButton url={`${window.location.origin}/books/${book._id}`}
+                            title= {`Check Out this book: ${book.title}`}
+                            text= {`I found this interesting Book on Kart: ${book.title}` } />
                         </div>
                     </div>
                     <div className="space-y-4">
@@ -137,7 +203,7 @@ export default function ProductPage() {
                                 <Truck />Shipping Available
                             </Badge>
                         </div>
-                        <Button className="w-60 py-6 hover:bg-blue-600 bg-blue-700 flex items-center justify-center gap-2 transition cursor-pointer">
+                        <Button className="w-60 py-6 hover:bg-blue-600 bg-blue-700 flex items-center justify-center gap-2 transition cursor-pointer" onClick={handleAddToCart} disabled={isAddToCart}>
                             {isAddToCart ? (
                                 <>
                                     <Loader2 className="animate-spin" size={20} />
@@ -237,15 +303,17 @@ export default function ProductPage() {
                                     </div>
                                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                         <MapPin className="h-4 w-4" />
-                                        Ajmer, Rajasthan
+                                        {book.seller?.addresses?.[0]?.city && book.seller.addresses[0]?.state
+                                            ? `${book.seller.addresses[0].city}, ${book.seller.addresses[0].state}`
+                                            : "Location Not Available"}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        {book.seller.contact && (
+                        {book.seller.phone && (
                             <div className="flex items-center gap-2 text-sm">
                                 <MessageCircle className="h-4 w-4" />
-                                <span> Contact : {book.seller.contact}</span>
+                                <span> Contact : {book.seller.phone}</span>
                             </div>
                         )}
                     </CardContent>
@@ -282,7 +350,7 @@ export default function ProductPage() {
 
                     ].map((item, index) => (
 
-                        <Card className="bg-linear-to-br from-amber-50 to-amber-100 border-none">
+                        <Card key={index} className="bg-linear-to-br from-amber-50 to-amber-100 border-none">
                             <CardHeader>
                                 <Badge className="w-fit mb-2"> {item.step} </Badge>
                                 <CardTitle className="text-lg">
@@ -291,7 +359,7 @@ export default function ProductPage() {
                                 <CardDescription> {item.description} </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <Image src={item.image.src} alt={item.image.alt} width={120} height={120} className="mx-auto"/>
+                                <Image src={item.image.src} alt={item.image.alt} width={120} height={120} className="mx-auto" />
                             </CardContent>
                         </Card>
                     ))}

@@ -408,7 +408,7 @@ export default function BookSell() {
                                 <Controller name="paymentMode" control={control} rules={{ required: "Payment Mode is required" }} render={({ field }) => (
                                     <RadioGroup onValueChange={field.onChange} value={field.value} className="flex space-x-4">
                                         <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="upi" id="upi" {...register('paymentMode')} />
+                                            <RadioGroupItem value="UPI" id="upi" {...register('paymentMode')} />
                                             <Label htmlFor="upi"> UPI ID</Label>
 
                                         </div>
@@ -432,7 +432,7 @@ export default function BookSell() {
                                 <Label htmlFor="upiId" className="md:w-1/4 font-medium text-gray-700">
                                     UPI ID:
                                 </Label>
-                                <Input {...register("paymentDetails.upiId", { required: "UPI ID is Required", pattern: { value: /[a-zA-Z0-9.-]{2, 256}@[a-zA-Z][a-zA-Z]{2, 64}/, message: "Invalid Upi Id" } })} placeholder="Please Enter Your UPI/VPA ID" type="text" />
+                                <Input {...register("paymentDetails.upiId", { required: "UPI ID is Required", pattern: { value: /^[\w.-]{2,256}@[a-zA-Z]{2,64}$/, message: "Invalid Upi Id" } })} placeholder="Please Enter Your UPI/VPA ID" type="text" />
                                 {errors.paymentDetails?.upiId && (
                                     <p className="text-red-500 text-sm">
                                         {errors.paymentDetails.upiId.message}
@@ -486,8 +486,8 @@ export default function BookSell() {
                 </Card>
                 <Button type="submit" disabled={isLoading} className="w-60 text-md bg-linear-to-r from-blue-500 to-indigo-600 text-white hover:from-orange-700 hover:to-orange-700 font-semibold py-6 shadow-lg rounde-lg transition duration-300 ease-in-out transform hover:scale-105">
                     {isLoading ? (
-                        <div>
-                            <Loader2 className="animate-spin mr-2" size={20} />
+                        <div className="flex items-center justify-center gap-2">
+                            <Loader2 className="animate-spin" size={20} />
                             Saving...
                         </div>
 

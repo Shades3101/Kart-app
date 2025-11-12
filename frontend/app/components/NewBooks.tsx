@@ -1,13 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { books } from "@/lib/Constant";
+import { BookDetails } from "@/lib/type/type";
+import { useGetProductsQuery } from "@/store/api";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
 import { useEffect, useState } from "react";
 
 export default function NewBooks() {
     const [currentBook, setCurrentBook] = useState(0);
+    const { data: apiResponse = {}, isLoading } = useGetProductsQuery({});
+    const [books, setBooks] = useState<BookDetails[]>([]);
+
+
+    useEffect(() => {
+        if (apiResponse.success) {
+            setBooks(apiResponse.data)
+            console.log(apiResponse)
+        }
+    }, [apiResponse])
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -52,16 +64,16 @@ export default function NewBooks() {
                                                     <CardContent className="p-4">
                                                         <Link href={`/books/${book._id}`}>
                                                             <div className="relative">
-                                                                <Image 
-                                                                src={book.images[0]} 
-                                                                alt={book.title} 
-                                                                width={200} 
-                                                                height={300} 
-                                                                className="mb-4 h-[200px] w-full object-cover rounded-md"
+                                                                <Image
+                                                                    src={book.images[0]}
+                                                                    alt={book.title}
+                                                                    width={200}
+                                                                    height={300}
+                                                                    className="mb-4 h-[200px] w-full object-cover rounded-md"
                                                                 />
                                                                 {calculateDiscount(book.price, book.finalPrice) > 0 && (
                                                                     <span className="absolute left-0 top-2 rounded-r-lg bg-red-500 px-2 py-1 text-xs font-medium text-white">
-                                                                            {calculateDiscount(book.price, book.finalPrice)}%off
+                                                                        {calculateDiscount(book.price, book.finalPrice)}%off
                                                                     </span>
                                                                 )}
                                                             </div>
@@ -71,11 +83,11 @@ export default function NewBooks() {
                                                             <div className="flex items-center justify-between">
                                                                 <div className="flex items-baseline gap-2">
                                                                     <span className="text-lg font-bold">
-                                                                        ₹{book.finalPrice} 
+                                                                        ₹{book.finalPrice}
                                                                     </span>
                                                                     {book.price && (
                                                                         <span className="text-sm text-muted-foreground line-through">
-                                                                            ₹{book.price} 
+                                                                            ₹{book.price}
                                                                         </span>
                                                                     )}
                                                                 </div>
@@ -86,9 +98,9 @@ export default function NewBooks() {
                                                                 </div>
                                                             </div>
                                                             <div className="pt-4">
-                                                                    <Button className = "flex float-end  bg-linear-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700">
-                                                                        Buy Now
-                                                                    </Button>
+                                                                <Button className="flex float-end  bg-linear-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700">
+                                                                    Buy Now
+                                                                </Button>
                                                             </div>
                                                         </Link>
                                                     </CardContent>
@@ -102,18 +114,18 @@ export default function NewBooks() {
                         {/* Scroll Button */}
 
                         <button className=" absolute -left-15 top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow-md" onClick={prevSlide}>
-                                <ChevronLeft/>
+                            <ChevronLeft />
                         </button>
-                        
+
                         <button className=" absolute -right-15 top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow-md" onClick={nextSlide}>
-                                <ChevronRight/>
+                            <ChevronRight />
                         </button>
 
 
                         {/* Dot Animtaion */}
                         <div className="mt-8 flex justify-center space-x-2">
-                            {[0,1,2].map((dot) => (
-                                <button key={dot} onClick={() => setCurrentBook(dot)} className={`h-3 w-3 rounded-full ${currentBook === dot? 'bg-blue-600': 'bg-gray-300'}`}>
+                            {[0, 1, 2].map((dot) => (
+                                <button key={dot} onClick={() => setCurrentBook(dot)} className={`h-3 w-3 rounded-full ${currentBook === dot ? 'bg-blue-600' : 'bg-gray-300'}`}>
 
                                 </button>
                             ))}

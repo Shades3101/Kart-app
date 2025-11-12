@@ -46,7 +46,7 @@ export const addToCart = async (req: Request, res: Response) => {
 
         await cart.save();
 
-        return response(res, 200, "Item added to cart successfully")
+        return response(res, 200, "Item added to cart successfully", cart)
 
     } catch (error) {
 
@@ -71,7 +71,7 @@ export const removeFromCart = async (req: Request, res: Response) => {
 
         await cart.save();
 
-        return response(res, 200, "Item removed from cart successfully")
+        return response(res, 200, "Item removed from cart successfully", cart)
 
     } catch (error) {
         console.error( error);

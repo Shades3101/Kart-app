@@ -2,9 +2,9 @@
 
 import { Accordion, AccordionTrigger, AccordionItem, AccordionContent } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
-import { books, filters } from "@/lib/Constant";
+import { filters } from "@/lib/Constant";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import ItemLoader from "@/lib/ItemLoader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -17,6 +17,8 @@ import { Heart } from "lucide-react";
 import Pagination from "../components/Pagination";
 import NoData from "../components/NoData";
 import { useRouter } from "next/navigation";
+import { useGetProductsQuery } from "@/store/api";
+import { BookDetails } from "@/lib/type/type";
 
 export default function Books() {
 
@@ -26,16 +28,25 @@ export default function Books() {
     const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
     const [sortOption, setSortOption] = useState('newest');
     const router = useRouter();
-    const [isloading, setIsloading] = useState(false);
-    
+    const { data: apiResponse = {}, isLoading } = useGetProductsQuery({});
     const bookPerPage = 6;
+    const [books, setBooks] = useState<BookDetails[]>([]);
+
+    const searchTerms = new URLSearchParams(window.location.search).get('search') || "";
+
+    useEffect(() => {
+        if (apiResponse.success) {
+            setBooks(apiResponse.data)
+            console.log(apiResponse)
+        }
+    }, [apiResponse])
+
+    console.log(books)
 
     const toggleFilter = (section: string, item: string) => {
 
-        const updateFilter = (prev: string[]) => {
+        const updateFilter = (prev: string[]) => prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item];
 
-            return prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item];
-        }
 
         switch (section) {
             case "condition":
@@ -55,8 +66,10 @@ export default function Books() {
         const conditionMatch = selectedCondition.length === 0 || selectedCondition.map(cond => cond.toLowerCase()).includes(book.condition.toLowerCase());
         const typeMatch = selectedType.length === 0 || selectedType.map(cond => cond.toLowerCase()).includes(book.classType.toLowerCase());
         const categoryMatch = selectedCategory.length === 0 || selectedCategory.map(cond => cond.toLowerCase()).includes(book.category.toLowerCase());
+        const searchMatch = searchTerms ? book.title.toLowerCase().includes(searchTerms.toLowerCase()) || book.author.toLowerCase().includes(searchTerms.toLowerCase()) ||
+            book.category.toLowerCase().includes(searchTerms.toLowerCase()) || book.subject.toLowerCase().includes(searchTerms.toLowerCase()) : true;
 
-        return conditionMatch && typeMatch && categoryMatch
+        return conditionMatch && typeMatch && categoryMatch && searchMatch
     });
 
     const sortedBooks = [...filterBooks].sort((a, b) => {
@@ -143,7 +156,7 @@ export default function Books() {
                     </Accordion>
                 </div>
                 <div className="space-y-6">
-                    {isloading ? (
+                    {isLoading ? (
                         <ItemLoader />
                     ) : paginatedBooks.length ? (
                         <>
@@ -223,25 +236,25 @@ export default function Books() {
                                                     </div>
                                                 </Link>
                                             </CardContent>
-                                            <div className="absolute -right-8 -top-8 h-24 w-24 rouneded-full bg-orange-500/20 blur-3xl"/>
-                                            <div className="absolute -bottom-8 -left-8 h-24 w-24 rouneded-full bg-orange-500/20 blur-3xl"/>
+                                            <div className="absolute -right-8 -top-8 h-24 w-24 rouneded-full bg-orange-500/20 blur-3xl" />
+                                            <div className="absolute -bottom-8 -left-8 h-24 w-24 rouneded-full bg-orange-500/20 blur-3xl" />
                                         </Card>
                                     </motion.div>
                                 ))}
                             </div>
                             <div className="flex mx-100">
-                                <Pagination currentPage = {currentPage} totalPages = {totalPage} onPageChange = {handlePageChanges} />
+                                <Pagination currentPage={currentPage} totalPages={totalPage} onPageChange={handlePageChanges} />
                             </div>
-                                
+
                         </>
                     ) : (
-                         <NoData
+                        <NoData
                             imageUrl="/images/no-book.jpg"
                             message="No books available please try later."
                             description="Try adjusting your filters or search criteria to find what you're looking for."
                             onClick={() => router.push("/book-sell")}
                             buttonText="Sell Your First Book"
-                            />
+                        />
                     )}
                 </div>
             </div>

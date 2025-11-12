@@ -15,10 +15,10 @@ const API_URLS = {
 
     //Product Url's
 
-    PRODUCTS: `${BASE_URL}/products`,
-    PRODUCT_BY_ID: (id: string) => `${BASE_URL}/products/${id}`,
+    PRODUCTS: `${BASE_URL}/product`,
+    PRODUCT_BY_ID: (id: string) => `${BASE_URL}/product/${id}`,
     PRODUCT_BY_SELLER_ID: (sellerId: string) => `${BASE_URL}/product/seller/${sellerId}`,
-    DELETE_PRODUCT_BY_ID: (productId: string) => `${BASE_URL}/products/seller/${productId}`,
+    DELETE_PRODUCT_BY_ID: (productId: string) => `${BASE_URL}/product/seller/${productId}`,
 
     //Cart URL's
 
@@ -181,14 +181,14 @@ export const api = createApi({
             query: (productId) => ({
                 url: API_URLS.ADD_TO_WISHLIST,
                 method: "POST",
-                body: (productId)
+                body: { productId }
             }),
             invalidatesTags: ['Wishlist']
         }),
 
         removeFromWishlist: builder.mutation({
             query: (productId) => ({
-                url: API_URLS.REMOVE_FROM_CART(productId),
+                url: API_URLS.REMOVE_FROM_WISHLIST(productId),
                 method: "DELETE",
             }),
             invalidatesTags: ['Wishlist']

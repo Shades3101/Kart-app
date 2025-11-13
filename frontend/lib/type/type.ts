@@ -48,7 +48,7 @@ export interface Product {
     images: string[],
     title: string,
     price: number,
-    finalPrice: string,
+    finalPrice: number,
     shippingCharge: string,
 
 }

@@ -5,7 +5,8 @@ import { createORUpdate, createPayment, getOrderById, getOrderByUser, handleRazo
 export const orderRouter = Router();
 
 orderRouter.post("/" , authMiddleware, createORUpdate);
+orderRouter.patch("/:id", authMiddleware, createORUpdate);  
 orderRouter.get("/", authMiddleware, getOrderByUser )
 orderRouter.get("/:id", authMiddleware, getOrderById)
 orderRouter.post("/payment-razorpay", authMiddleware, createPayment);
-orderRouter.post("/razorpay-webhook", authMiddleware, handleRazorPayWebHook)
+orderRouter.post("/razorpay-webhook", handleRazorPayWebHook)

@@ -28,7 +28,6 @@ export default function Header() {
     const [logoutMutation] = useLogoutMutation();
 
     const user = useSelector((state: RootState) => state.user.user);
-    console.log(user)
     const userPlaceholder = user?.name.split(" ").map((name: string) => name[0]).join("");
     const cartItemCount = useSelector((state: RootState) => state.cart.items.length)
     const {data: cartData} = useGetCartQuery(user?._id,  {skip: !user})

@@ -16,55 +16,61 @@ const razorpay = new Razorpay({
 export const createORUpdate = async (req: Request, res: Response) => {
     try {
         const userId = req.id;
-        const { orderId, shippingAddress, paymentMethod, paymentDetails, totalAmount } = req.body;
+        // Get orderId from params (for PATCH) or body (for POST)
+        const orderId = req.params.id || req.body.orderId;
+        const { shippingAddress, paymentMethod, paymentDetails, totalAmount, paymentStatus, status } = req.body;
 
-        const cart = await cartModel.findOne({ user: userId }).populate("items.product")
-
-        if (!cart || cart.items.length === 0) {
-
-            return response(res, 400, "Cart is Empty")
-        }
-
-        let order = await OrderModel.findOne({ _id: orderId });
+        let order = await OrderModel.findOne({ _id: orderId, user: userId });
 
         if (order) {
-            order.shippingAddress = shippingAddress || order.shippingAddress;
-            order.paymentMethod = paymentMethod || order.paymentMethod;
-            order.totalAmount = totalAmount || order.totalAmount;
+            // Update existing order
+            if (shippingAddress) order.shippingAddress = shippingAddress;
+            if (paymentMethod) order.paymentMethod = paymentMethod;
+            if (totalAmount) order.totalAmount = totalAmount;
+            if (paymentStatus) order.paymentStatus = paymentStatus;
+            if (status) order.status = status;
+            
             if (paymentDetails) {
                 order.paymentDetails = paymentDetails;
                 order.paymentStatus = "complete";
                 order.status = "processing";
             }
-        }
-        else {
+
+            await order.save();
+
+            // Clear cart after successful payment
+            if (order.paymentStatus === "complete") {
+                await cartModel.findOneAndUpdate(
+                    { user: userId },
+                    { $set: { items: [] } }
+                );
+            }
+
+            return response(res, 200, "Order Updated Successfully", order);
+        } else {
+            // Create new order - cart is required
+            const cart = await cartModel.findOne({ user: userId }).populate("items.product");
+
+            if (!cart || cart.items.length === 0) {
+                return response(res, 400, "Cart is Empty");
+            }
+
             order = await OrderModel.create({
                 user: userId,
                 items: cart.items,
                 totalAmount,
                 shippingAddress,
                 paymentMethod,
-                paymentStatus: paymentDetails ? "complete" : "pending",
+                paymentStatus: "pending",
+                status: null  // Will be set to "processing" after payment
+            });
 
-            })
+            return response(res, 200, "Order Created Successfully", order);
         }
-
-        await order.save();
-
-        if (paymentDetails) {
-            await cartModel.findOneAndUpdate(
-                { user: userId },
-                {
-                    $set: { items: [] }
-                }
-            )
-        }
-
-        return response(res, 200, "Order Created or updated Successfully")
         
     } catch (error) {
-        console.error(error);
-        return response(res, 500, "Internal Server Error")
+        console.error("Order creation/update error:", error);
+        return response(res, 500, "Internal Server Error");
     }
 }
 

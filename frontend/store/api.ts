@@ -153,7 +153,7 @@ export const api = createApi({
 
         //Cart endpoints 
 
-         addToCart: builder.mutation({
+        addToCart: builder.mutation({
             query: (productData) => ({
                 url: API_URLS.ADD_TO_CART,
                 method: "POST",
@@ -176,8 +176,8 @@ export const api = createApi({
         }),
 
         //wishlist endpoints
-        
-         addToWishlist: builder.mutation({
+
+        addToWishlist: builder.mutation({
             query: (productId) => ({
                 url: API_URLS.ADD_TO_WISHLIST,
                 method: "POST",
@@ -198,23 +198,23 @@ export const api = createApi({
             query: (userId) => API_URLS.WISHLIST(userId),
             providesTags: ['Wishlist']
         }),
-        
+
         //order endpoints
-         getUserOrders: builder.query({
+        getUserOrders: builder.query({
             query: () => API_URLS.ORDERS,
             providesTags: ['Order']
         }),
 
-         getOrderById: builder.query({
+        getOrderById: builder.query({
             query: (orderId) => API_URLS.ORDER_BY_ID(orderId),
             providesTags: ['Order']
         }),
-        
+
         createOrUpdateOrder: builder.mutation({
-            query: ({orderId, orderData}) => ({
-                url: API_URLS.ORDERS,
+            query: ({ orderId, updates }) => ({
+                url: orderId ? `${API_URLS.ORDERS}/${orderId}` : API_URLS.ORDERS,
                 method: orderId ? "PATCH" : "POST",
-                body: orderData
+                body: updates  // Don't include orderId in body
             }),
             invalidatesTags: ['Order']
         }),
@@ -223,24 +223,24 @@ export const api = createApi({
             query: (orderId) => ({
                 url: API_URLS.CREATE_RAZOR_PAYMENT,
                 method: "POST",
-                body: (orderId)
+                body: { orderId }
             })
         }),
-        
+
         //address endpoints
 
-        getAddress: builder.query<any [], void>({
-            query: ()=> API_URLS.GET_ADDRESS,
+        getAddress: builder.query<any[], void>({
+            query: () => API_URLS.GET_ADDRESS,
             providesTags: ['Address']
         }),
 
         addOrUpdateAddress: builder.mutation<any, any>({
-             query: (address) => ({
+            query: (address) => ({
                 url: API_URLS.ADD_OR_UPDATE_ADDRESS,
                 method: "POST",
                 body: address
             }),
-            invalidatesTags:['Address']
+            invalidatesTags: ['Address']
         })
     })
 })

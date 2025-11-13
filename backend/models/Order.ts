@@ -7,7 +7,6 @@ export const orderItemSchema = new Schema({
 })
 
 export const orderSchema = new Schema({
-    _id: {type: Schema.Types.ObjectId, ref:"product", required: true},
     user: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     items: [orderItemSchema],
     totalAmount: {type: Number},

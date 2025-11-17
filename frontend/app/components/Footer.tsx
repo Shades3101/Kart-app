@@ -77,7 +77,7 @@ export default function Footer() {
                         </Link>
                     </div>
                     <p className="text-sm">
-                        BookKart is a free platform where you can buy second hand books at
+                        Kart is a free platform where you can buy second hand books at
                         very cheap prices. Buy used books online like college books,
                         school books, much more near you.
                     </p>

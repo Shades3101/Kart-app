@@ -36,9 +36,9 @@ export default function Home() {
     {
       imageSrc:
         "https://images.unsplash.com/photo-1492539438225-2666b2a98f93?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fG9sZCUyMCUyMGJvb2tzfGVufDB8fDB8fHww",
-      title: "What is BookKart?",
+      title: "What is Kart?",
       description:
-        "Discover how BookKart helps you buy and sell used books online easily.",
+        "Discover how Kart helps you buy and sell used books online easily.",
       icon: <Store className="w-6 h-6 text-primary" />,
     },
   ];
@@ -48,7 +48,7 @@ export default function Home() {
       step: "Step 1",
       title: "Post an ad for selling used books",
       description:
-        "Post an ad on BookKart describing your book details to sell your old books online.",
+        "Post an ad on Kart describing your book details to sell your old books online.",
       icon: <Camera className="h-8 w-8 text-primary" />,
     },
     {

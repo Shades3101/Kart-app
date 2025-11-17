@@ -4,7 +4,7 @@ export default function Terms(){
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-8">Terms of Use</h1>
         <p className="text-gray-600 mb-4">
-          Welcome to BookKart! These terms and conditions outline the rules and regulations for the use of our website.
+          Welcome to Kart! These terms and conditions outline the rules and regulations for the use of our website.
         </p>
         <h2 className="text-2xl font-semibold mt-6">1. Acceptance of Terms</h2>
         <p className="text-gray-600 mb-4">
@@ -18,7 +18,7 @@ export default function Terms(){
 
         <h2 className="text-2xl font-semibold mt-6">3. Selling Books</h2>
         <p className="text-gray-600 mb-4">
-          When selling books on BookKart, you agree to provide accurate and complete information about the books you are listing.
+          When selling books on Kart, you agree to provide accurate and complete information about the books you are listing.
         </p>
 
         <h2 className="text-2xl font-semibold mt-6">4. Changes to Terms</h2>
@@ -28,7 +28,7 @@ export default function Terms(){
 
         <h2 className="text-2xl font-semibold mt-6">5. Contact Us</h2>
         <p className="text-gray-600 mb-4">
-          If you have any questions about these terms, please contact us at support@bookkart.com.
+          If you have any questions about these terms, please contact us at support@kart.com.
         </p>
       </div>
     </div>

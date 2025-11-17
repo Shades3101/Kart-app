@@ -1,19 +1,19 @@
 import { Request, Response } from "express";
 import { UserModel } from "../models/User";
-import crypto  from "crypto";
+import crypto from "crypto";
 import { sendResetEmail, sendVerifyEmail } from "../config/emailConfig";
 import generateToken from "../utils/GenerateToken";
 import { response } from "../utils/responseHandler";
 
-export  default async function register ( req: Request, res: Response) {
+export default async function register(req: Request, res: Response) {
 
     try {
-        const {name, email, password , agreeTerms} = req.body;
+        const { name, email, password, agreeTerms } = req.body;
         const existingUser = await UserModel.findOne({
             email
         })
 
-        if(existingUser) {
+        if (existingUser) {
 
             return response(res, 400, "User Already Exists")
         }
@@ -24,7 +24,7 @@ export  default async function register ( req: Request, res: Response) {
             email,
             password,
             agreeTerms,
-            token : randomCrypto
+            token: randomCrypto
         })
 
         const result = await sendVerifyEmail(user.email, randomCrypto)
@@ -33,19 +33,19 @@ export  default async function register ( req: Request, res: Response) {
 
     } catch (error) {
         console.log(error);
-        
+
         return response(res, 500, "Internal Server Error")
     }
 }
 
-export const verifyEmail = async (req : Request, res: Response) => {
+export const verifyEmail = async (req: Request, res: Response) => {
     try {
         const { token } = req.params;
         const user = await UserModel.findOne({
             token
         })
 
-        if(!user) {
+        if (!user) {
             return response(res, 400, "Invalid or Expired Token")
         }
 
@@ -55,50 +55,54 @@ export const verifyEmail = async (req : Request, res: Response) => {
         const accessToken = generateToken(user);
         res.cookie('access_token', accessToken, {
             httpOnly: true,
+            sameSite: "none",
+            secure: true,
             maxAge: 24 * 60 * 60 * 1000
         })
 
         await user.save();
         return response(res, 200, "Email Verification Successful")
-        
-        
-    } catch (error) {
-        console.log(error);
-       return response(res, 500, "Internal Server Error")
-    }
-}
 
-export const login = async (req : Request, res: Response) => {
-    try {
-        const {email, password} = req.body;
-        const user = await UserModel.findOne({
-            email
-        })
 
-        if(!user || !(await user.comparePass(password))) {
-            return response(res, 400,"Invalid Email or Password")
-           
-        }
-
-        if(!user.isVerified) {
-            return response(res, 400,"Verify Your Email Before Loggin In")
-        }
-
-        const accessToken = generateToken(user);
-        res.cookie('access_token', accessToken, {
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000
-        })
-
-        return response(res, 200,"Login Successfull", {user: {name: user.name, email: user.email}}) 
-        
     } catch (error) {
         console.log(error);
         return response(res, 500, "Internal Server Error")
     }
 }
 
-export const forgotPass = async (req: Request, res: Response) =>{
+export const login = async (req: Request, res: Response) => {
+    try {
+        const { email, password } = req.body;
+        const user = await UserModel.findOne({
+            email
+        })
+
+        if (!user || !(await user.comparePass(password))) {
+            return response(res, 400, "Invalid Email or Password")
+
+        }
+
+        if (!user.isVerified) {
+            return response(res, 400, "Verify Your Email Before Loggin In")
+        }
+
+        const accessToken = generateToken(user);
+        res.cookie('access_token', accessToken, {
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+            maxAge: 24 * 60 * 60 * 1000
+        })
+
+        return response(res, 200, "Login Successfull", { user: { name: user.name, email: user.email } })
+
+    } catch (error) {
+        console.log(error);
+        return response(res, 500, "Internal Server Error")
+    }
+}
+
+export const forgotPass = async (req: Request, res: Response) => {
     try {
         const { email } = req.body;
         console.log(email)
@@ -106,8 +110,8 @@ export const forgotPass = async (req: Request, res: Response) =>{
             email
         })
 
-        if(!user) {
-            return response(res, 400,`No user exists with this ${email}id`)
+        if (!user) {
+            return response(res, 400, `No user exists with this ${email}id`)
         }
 
         const resetToken = crypto.randomBytes(20).toString('hex');
@@ -118,7 +122,7 @@ export const forgotPass = async (req: Request, res: Response) =>{
         await sendResetEmail(user.email, resetToken);
 
         return response(res, 200, "Reset link Sent to the mail")
-        
+
 
     } catch (error) {
         console.log(error);
@@ -126,17 +130,17 @@ export const forgotPass = async (req: Request, res: Response) =>{
     }
 }
 
-export const resetPass = async (req : Request, res: Response) => {
+export const resetPass = async (req: Request, res: Response) => {
     try {
-        const {token} = req.params;
-        const {newPassword}  = req.body;
+        const { token } = req.params;
+        const { newPassword } = req.body;
 
         const user = await UserModel.findOne({
-            resetPassToken:token,
-            resetPassExpire: {$gt : Date.now()}
+            resetPassToken: token,
+            resetPassExpire: { $gt: Date.now() }
         })
 
-        if(!user) {
+        if (!user) {
             return response(res, 400, "Invalid or Expired Token")
         }
 
@@ -147,27 +151,31 @@ export const resetPass = async (req : Request, res: Response) => {
         const accessToken = generateToken(user);
         res.cookie('access_token', accessToken, {
             httpOnly: true,
+            sameSite: "none",
+            secure: true,
             maxAge: 24 * 60 * 60 * 1000
         })
 
         await user.save();
 
         return response(res, 200, "Password Reset SuccessFully")
-        
+
     } catch (error) {
         console.log(error);
         return response(res, 500, "Internal Server Error")
     }
 }
 
-export const logout = async( req: Request, res: Response) => {
+export const logout = async (req: Request, res: Response) => {
     try {
         res.clearCookie("access_token", {
             httpOnly: true,
+            sameSite: "none",
+            secure: true,
         })
 
         return response(res, 200, "Successfully Logged Out")
-        
+
     } catch (error) {
         console.log(error)
         return response(res, 500, "Internal Server Error")
@@ -177,17 +185,17 @@ export const logout = async( req: Request, res: Response) => {
 export const checkUserAuth = async (req: Request, res: Response) => {
     try {
         const userId = req.id;
-        if(!userId) {
+        if (!userId) {
             return response(res, 400, "unauthenticated")
 
         }
 
         const user = await UserModel.findById(userId).select("-password -token -resetPassToken -resetPassExpire")
-        if(!user) {
-             return response(res, 400, "user not found")
+        if (!user) {
+            return response(res, 400, "user not found")
         }
         return response(res, 200, "Authenticated", user)
-       
+
     } catch (e) {
         console.log(e);
         return response(res, 500, "Internal Server Error")

@@ -30,6 +30,8 @@ session: false
             const accessToken = await generateToken(user)
             res.cookie ("access_token", accessToken, {
                 httpOnly: true,
+                sameSite:"none",
+                secure:true,
                 maxAge: 24* 60 * 60* 1000
             })
 

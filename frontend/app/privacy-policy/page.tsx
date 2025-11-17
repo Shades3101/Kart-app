@@ -7,7 +7,7 @@
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-8">Privacy Policy</h1>
         <p className="text-gray-600 mb-4">
-          At BookKart, we are committed to protecting your privacy. This privacy policy explains how we collect, use, and disclose your information.
+          At Kart, we are committed to protecting your privacy. This privacy policy explains how we collect, use, and disclose your information.
         </p>
 
         <h2 className="text-2xl font-semibold mt-6">1. Information We Collect</h2>
@@ -37,7 +37,7 @@
 
         <h2 className="text-2xl font-semibold mt-6">6. Contact Us</h2>
         <p className="text-gray-600 mb-4">
-          If you have any questions about this privacy policy or our practices regarding your personal information, please contact us at support@bookkart.com.
+          If you have any questions about this privacy policy or our practices regarding your personal information, please contact us at support@kart.com.
         </p>
       </div>
     </div>

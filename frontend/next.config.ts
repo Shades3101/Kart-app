@@ -1,14 +1,9 @@
-/** @type {import('next').NextConfig} */
+import type { NextConfig } from "next";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   /* config options here */
 
   reactStrictMode:true,
-
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-
   images:{
     remotePatterns : [
       {

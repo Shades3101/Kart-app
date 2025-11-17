@@ -9,7 +9,7 @@ import { ChangeEvent, useState } from "react"
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import NoData from "../../components/NoData";
+import NoData from "../components/NoData";
 import Link from "next/link";
 import { Book, Camera, ChevronRight, CreditCard, DollarSign, HelpCircle, Loader2, X } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

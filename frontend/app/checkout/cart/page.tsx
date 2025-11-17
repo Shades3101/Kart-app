@@ -1,9 +1,9 @@
 "use client"
 
-import AddressPage from "@/components/Address";
-import CartItemPage from "@/components/CartItems";
-import NoData from "@/components/NoData";
-import PriceDetails from "@/components/PriceDetails";
+import AddressPage from "@/app/components/Address";
+import CartItemPage from "@/app/components/CartItems";
+import NoData from "@/app/components/NoData";
+import PriceDetails from "@/app/components/PriceDetails";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";

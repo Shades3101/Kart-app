@@ -1,6 +1,6 @@
 "use client";
 
-import NoData from "@/components/NoData";
+import NoData from "@/app/components/NoData";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import ItemLoader from "@/lib/ItemLoader";
 import { Order } from "@/lib/type/type";

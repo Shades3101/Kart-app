@@ -75,7 +75,7 @@ export interface PaymentDetails {
 export interface Order {
     _id: string,
     user: userData,
-    items: OrderItem,
+    items: OrderItem[],
     totalAmount: number,
     createdAt: Date,
     shippingAddress: Address,

@@ -182,7 +182,7 @@ export const checkUserAuth = async (req: Request, res: Response) => {
 
         }
 
-        const user = await UserModel.findById(userId).select("name email profilePicture isVerified")
+        const user = await UserModel.findById(userId).select("-password -token -resetPassToken -resetPassExpire")
         if(!user) {
              return response(res, 400, "user not found")
         }

@@ -5,5 +5,5 @@ import { updateUserProfile } from "../controllers/userController";
 
 export const userRouter = Router();
 
-userRouter.put("/create-or-update", authMiddleware,updateUserProfile);
+userRouter.put("/profile/update/:id", authMiddleware,updateUserProfile);
 

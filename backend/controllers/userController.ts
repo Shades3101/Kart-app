@@ -5,17 +5,18 @@ import { response } from "../utils/responseHandler";
 
 export const updateUserProfile = async (req: Request, res: Response) => {
     try {
-        const userId = req.params;
+        const {id} = req.params;
 
-        if (!userId) {
-            return response(res, 400, "userId is required")
+        if (!id) {
+            return response(res, 400, "id is required")
         }
 
         const { name, email, phone } = req.body;
-        const updateUser = await UserModel.findByIdAndUpdate(userId,
+        const updateUser = await UserModel.findByIdAndUpdate(
+            id,
             { name, email, phone },
             { new: true, runValidators: true }
-        ).select("name, phone, email");
+        ).select("-password -token -resetPassToken -resetPassExpire");
 
         if(!updateUser) {
             return response(res, 400, "User Not Found")

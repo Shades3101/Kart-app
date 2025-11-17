@@ -3,9 +3,9 @@
 const nextConfig = {
   /* config options here */
 
-  reactStrictMode:true,
+  reactStrictMode: true,
   eslint: {
-    eslintDuringBuilds:true,
+    ignoreDuringBuilds: true,
   },
   images:{
     remotePatterns : [

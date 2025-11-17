@@ -1,7 +1,7 @@
 "use client"
 
-import NoData from "@/app/components/NoData";
-import { ShareButton } from "@/app/components/Share";
+import NoData from "@/components/NoData";
+import { ShareButton } from "@/components/Share";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

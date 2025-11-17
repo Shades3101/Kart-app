@@ -5,7 +5,7 @@ import { ArrowRight, BookOpen, Camera, CreditCard, Library, Search, ShoppingBag,
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import NewBooks from "./components/NewBooks";
+import NewBooks from "../components/NewBooks";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {

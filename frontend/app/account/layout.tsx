@@ -8,7 +8,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { ReactNode } from "react"
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import NoData from "../components/NoData";
+import NoData from "../../components/NoData";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";

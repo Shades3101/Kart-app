@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import LayoutWrapper from "./LayoutWrapper";
 
 const geistSans = GeistSans;

@@ -3,12 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Share, Facebook, Linkedin, MessageCircle } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface ShareButtonProps {
   url: string;
@@ -24,10 +19,10 @@ export const ShareButton = ({ url, title, text }: ShareButtonProps) => {
       try {
         await navigator.share({ title, text, url });
         return;
-      } catch {}
+      } catch { }
     }
 
-    setOpen(true); // Desktop → open iOS modal
+    setOpen(true);
   };
 
   const handleCopy = async () => {
@@ -41,7 +36,7 @@ export const ShareButton = ({ url, title, text }: ShareButtonProps) => {
         <Share className="h-4 w-4" />
       </Button>
 
-      {/* iOS style modal */}
+
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-xs rounded-3xl p-6 bg-white shadow-xl border-none">
           <DialogHeader className="text-center mb-3">
@@ -50,10 +45,10 @@ export const ShareButton = ({ url, title, text }: ShareButtonProps) => {
             </DialogTitle>
           </DialogHeader>
 
-          {/* Icons Grid */}
+
           <div className="grid grid-cols-3 gap-5 justify-items-center mb-5">
 
-            {/* Facebook */}
+
             <ShareIcon
               label="Facebook"
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
@@ -87,7 +82,6 @@ export const ShareButton = ({ url, title, text }: ShareButtonProps) => {
             </ShareIcon>
           </div>
 
-          {/* Copy Link → iOS style */}
           <Button
             onClick={handleCopy}
             className="w-full rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium"
@@ -101,18 +95,8 @@ export const ShareButton = ({ url, title, text }: ShareButtonProps) => {
   );
 };
 
-/* Reusable icon block */
-const ShareIcon = ({
-  href,
-  children,
-  label,
-  color,
-}: {
-  href: string;
-  children: React.ReactNode;
-  label: string;
-  color: string;
-}) => {
+
+const ShareIcon = ({ href, children, label, color, }: { href: string; children: React.ReactNode; label: string; color: string; }) => {
   return (
     <a
       href={href}

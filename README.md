@@ -1,30 +1,34 @@
-<div align="center">
+<p align="center">
   <br />
   <a href="https://github.com/Shades3101/Kart-app">
-    <img src="frontend/public/images/web-logo.png" alt="Kart Logo" width="500" style="background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <img src="frontend/public/images/web-logo.png" alt="Kart Logo" width="500">
   </a>
   <br />
   <br />
-  <h1><b>Kart</b></h1>
-  <p align="center">
-    <b>India's Premier Marketplace for Buying & Selling Used Books</b>
-    <br />
-    <a href="https://github.com/Shades3101/Kart-app"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="#">View Demo</a>
-    ·
-    <a href="https://github.com/Shades3101/Kart-app/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/Shades3101/Kart-app/issues">Request Feature</a>
-  </p>
+</p>
 
-  <p align="center">
-    <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge&logo=git&logoColor=white" alt="Status" />
-    <img src="https://img.shields.io/badge/License-ISC-blue?style=for-the-badge&logo=open-source-initiative&logoColor=white" alt="License" />
-    <img src="https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge&logo=github-actions&logoColor=white" alt="Build" />
-  </p>
-</div>
+<h1 align="center">Kart</h1>
+
+<p align="center">
+  <b>India's Premier Marketplace for Buying & Selling Used Books</b>
+  <br />
+  <a href="https://github.com/Shades3101/Kart-app"><strong>Explore the docs »</strong></a>
+  <br />
+  <br />
+  <a href="#">View Demo</a>
+  ·
+  <a href="https://github.com/Shades3101/Kart-app/issues">Report Bug</a>
+  ·
+  <a href="https://github.com/Shades3101/Kart-app/issues">Request Feature</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge&logo=git&logoColor=white" alt="Status" />
+  <img src="https://img.shields.io/badge/License-ISC-blue?style=for-the-badge&logo=open-source-initiative&logoColor=white" alt="License" />
+  <img src="https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge&logo=github-actions&logoColor=white" alt="Build" />
+</p>
+
+<br />
 
 ---
 

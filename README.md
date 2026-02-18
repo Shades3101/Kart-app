@@ -1,10 +1,11 @@
 <div align="center">
   <br />
   <a href="https://github.com/Shades3101/Kart-app">
-    <img src="frontend/public/images/web-logo.png" alt="Lumiere Logo" width="450">
+    <img src="frontend/public/images/web-logo.png" alt="Kart Logo" width="500" style="background-color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
   </a>
   <br />
-  <h3><b>Lumiere</b></h3>
+  <br />
+  <h1><b>Kart</b></h1>
   <p align="center">
     <b>India's Premier Marketplace for Buying & Selling Used Books</b>
     <br />
@@ -42,10 +43,10 @@
 
 ## 📖 About The Project
 
-**Lumiere** is a dedicated peer-to-peer marketplace designed to give old books a new home. We connect book lovers across India, fostering a sustainable reading culture by allowing users to trade pre-loved books effortlessly.
+**Kart** is a dedicated peer-to-peer marketplace designed to give old books a new home. We connect book lovers across India, fostering a sustainable reading culture by allowing users to trade pre-loved books effortlessly.
 
 ### Built With
-Lumiere leverages a modern full-stack architecture to provide a lightning-fast and secure experience:
+Kart leverages a modern full-stack architecture to provide a lightning-fast and secure experience:
 *   **Next.js 15+** for the dynamic and responsive frontend.
 *   **Node.js & Express** for a scalable backend API.
 *   **MongoDB** for flexible data storage.
@@ -100,7 +101,7 @@ Lumiere leverages a modern full-stack architecture to provide a lightning-fast a
 ## 📂 Project Structure
 
 ```bash
-lumiere/
+Kart/
 ├── 📁 backend/             # Node.js & Express API
 │   ├── 📁 src/
 │   │   ├── 📁 config/      # DB & Cloudinary Configuration

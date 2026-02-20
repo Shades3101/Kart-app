@@ -194,7 +194,6 @@ Distributed under the **ISC License**. See `LICENSE` for more information.
 
 <div align="center">
   <br />
-  <p>Made with ❤️ by <a href="https://github.com/Shades3101">Karan</a></p>
   <img src="https://forthebadge.com/images/badges/built-with-love.svg" height="25">
   <img src="https://forthebadge.com/images/badges/made-with-typescript.svg" height="25">
   <img src="https://forthebadge.com/images/badges/not-a-bug-a-feature.svg" height="25">

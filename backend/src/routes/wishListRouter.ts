@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleware/authMiddleware";
-import { addToWishList, getWishList, removeFromWishList } from "../controllers/wisthListController";
+import { addToWishList, getWishList, removeFromWishList } from "../controllers/wishListController";
 
 export const wishListRouter = Router();
 

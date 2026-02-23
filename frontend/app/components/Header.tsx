@@ -257,11 +257,7 @@ export default function Header() {
 
             <div className="flex flex-2 items-center justify-center max-w-xl px-4">
                 <div className="relative w-full">
-                    <Input
-                        type="text"
-                        placeholder="Search"
-                        className="w-full pr-10"
-                    />
+                    <Input type="text" placeholder="Search" className="w-full pr-10" />
 
                     <Button size='icon' variant='ghost' className="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer">
                         <Search />

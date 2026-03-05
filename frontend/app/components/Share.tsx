@@ -95,7 +95,6 @@ export const ShareButton = ({ url, title, text }: ShareButtonProps) => {
   );
 };
 
-
 const ShareIcon = ({ href, children, label, color, }: { href: string; children: React.ReactNode; label: string; color: string; }) => {
   return (
     <a

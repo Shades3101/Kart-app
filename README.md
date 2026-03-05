@@ -125,12 +125,24 @@ Kart/
 <div align="center">
   <table border="0">
     <tr>
-      <td><img src="https://via.placeholder.com/400x250?text=Listing+Page" alt="Listing" width="400"/></td>
-      <td><img src="https://via.placeholder.com/400x250?text=Checkout+Flow" alt="Checkout" width="400"/></td>
+      <td align="center">
+        <b>✨ Landing Page</b><br />
+        <img src="frontend/public/Landing Page.png" alt="Landing Page" width="400" height="250" style="object-fit: cover; border-radius: 8px;" />
+      </td>
+      <td align="center">
+        <b>🛍️ Product Details</b><br />
+        <img src="frontend/public/Product Details Page.png" alt="Product Details" width="400" height="250" style="object-fit: cover; border-radius: 8px;" />
+      </td>
     </tr>
     <tr>
-      <td align="center"><b>Explore Books</b></td>
-      <td align="center"><b>Secure Checkout</b></td>
+      <td align="center">
+        <b>📚 Marketplace</b><br />
+        <img src="frontend/public/2.png" alt="Marketplace" width="400" height="250" style="object-fit: cover; border-radius: 8px;" />
+      </td>
+      <td align="center">
+         <b>🛒 Shopping Flow</b><br />
+         <img src="frontend/public/Checkout.png" alt="Checkout" width="400" height="250" style="object-fit: cover; border-radius: 8px;" />
+      </td>
     </tr>
   </table>
 </div>
